@@ -9,7 +9,7 @@
      },
     devServer: {
         inline: true,
-        contentBase: './dist',
+        contentBase: './',
         port: 3000
     },
      module: {

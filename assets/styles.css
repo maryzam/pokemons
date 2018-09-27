@@ -3,4 +3,31 @@
 	margin: 0;
 	border: none;
 	box-sizing: content-box;
+	font-family: 'Roboto', sans-serif;
+    color: #555;
+}
+
+.pokemon {
+	fill-opacity: 0.5;
+	stroke: #777;
+	stroke-width: 1px;
+}
+
+.tooltip {	
+	display: none;
+    position: absolute;			
+    text-align: center;			
+    width: 60px;					
+    padding: 2px;				
+    font: 12px sans-serif;		
+    background: white;	
+    border: solid 1px #dadada;		
+    pointer-events: none;	
+    z-index: 10;		
+}
+
+.axis text {
+    font-weight: bold;
+    text-anchor: middle;
+    font-size: 0.7em;
 }

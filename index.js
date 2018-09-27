@@ -1,11 +1,31 @@
-
-d3.csv("data/pokemons_trio.tsv")
+d3.csv("pokemons_trio.csv")
   .then((source) => {
-  		console.log(source);
   		// prepare container
-		const width = 650;
+		const width = 700;
 		const aspectRatio = 2 / Math.sqrt(3);
 		const height = width / aspectRatio;
+
+		const types = [	"bug",
+						"dark",
+						"dragon",
+						"electric",
+						"fairy",
+						"fighting",
+						"fire",
+						"flying",
+						"ghost",
+						"grass",
+						"ground",
+						"ice",
+						"normal",
+						"poison",
+						"psychic",
+						"rock",
+						"steel",
+						"water" ];
+
+		const scaleColor =d3.scaleSequential(d3.interpolateRainbow)
+    						.domain([0, types.length]);
 
 		const svg = d3.select("#pokemons_triangle")
 						.append("svg")
@@ -17,7 +37,7 @@ d3.csv("data/pokemons_trio.tsv")
 		// scale radius
 		const powerRange = d3.extent(source, (d) => +d.power);
 		const scaleRadius = d3.scaleSqrt()
-								.range([1, 10])
+								.range([1, 5])
 								.domain(powerRange);
 
 		// scale coordinates
@@ -31,7 +51,7 @@ d3.csv("data/pokemons_trio.tsv")
 						.domain([0, 1]);
 
 		// calculate coordinates
-		const minRatio = 0.5;
+		const minRatio = 0.25;
 		const coeff = 1 / (1 - minRatio);
 		const calcX = (speed, attack, defense)  => {
 
@@ -43,7 +63,7 @@ d3.csv("data/pokemons_trio.tsv")
 
 		const calcY = (speed, attack, defense) => {
 
-			const x = attack * triangle.attack.y + 
+			const y = attack * triangle.attack.y + 
 					  speed * triangle.speed.y +
 					  defense * triangle.defense.y;
 			return coeff * scaleCoord(y);
@@ -59,9 +79,11 @@ d3.csv("data/pokemons_trio.tsv")
 			.data(source)
 				.enter()
 			.append("circle")
+				.attr("class", "pokemon")
 				.attr("r", (d) => scaleRadius(+d.power))
 				.attr("cx", (d) => calcX(+d.speed_b, +d.attack_b, +d.defense_b))
-				.attr("cy", (d) => calcY(+d.speed_b, +d.attack_b, +d.defense_b))	
+				.attr("cy", (d) => calcY(+d.speed_b, +d.attack_b, +d.defense_b))
+				.style("fill", (d) => scaleColor(types.indexOf(d.type1)))
 			.on("mouseover", (d) => {
 				tooltip.html(`${d.name}<br/>${d.type1}`);
 				tooltip.style("display", "block")
