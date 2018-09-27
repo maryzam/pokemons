@@ -38,5 +38,21 @@ h2 {
 .axis text {
     font-weight: bold;
     text-anchor: middle;
-    fill: #fff;
+    fill: #dadada;
+}
+
+.legend text {
+	fill: #777;
+	font-size: 0.75em;
+	text-anchor: end;
+}
+
+.legend .header {
+	font-weight: bold;
+	fill: #dadada;
+}
+
+.viz svg {
+	display: block;
+	margin: auto;
 }

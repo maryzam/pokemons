@@ -5,27 +5,36 @@ d3.csv("pokemons_trio.csv")
 		const aspectRatio = 2 / Math.sqrt(3);
 		const height = width / aspectRatio;
 
-		const types = [	"bug",
+		const types = [	
 						"dark",
+						"bug",
 						"dragon",
 						"electric",
-						"fairy",
-						"fighting",
 						"fire",
+						"fighting",
+						"fairy",
 						"flying",
 						"ghost",
-						"grass",
-						"ground",
-						"ice",
-						"normal",
-						"poison",
 						"psychic",
-						"rock",
+						"ground",
+						"grass",
+						"poison",
 						"steel",
-						"water" ];
+						"ice",
+						"rock",
+						"water",
+						"normal"];
 
 		const scaleColor =d3.scaleSequential(d3.interpolateRainbow)
     						.domain([0, types.length]);
+
+    	const getColor = (d) => {
+    		if (d == "normal") {
+    			return "#444";
+    		}
+    		let idx = types.indexOf(d);
+    		return scaleColor(idx);
+    	}
 
 		const svg = d3.select("#pokemons_triangle")
 						.append("svg")
@@ -92,7 +101,7 @@ d3.csv("pokemons_trio.csv")
 				.attr("r", (d) => scaleRadius(+d.power))
 				.attr("cx", (d) => d.x)
 				.attr("cy", (d) => d.y)
-				.style("fill", (d) => scaleColor(types.indexOf(d.type1)))
+				.style("fill", (d) => getColor(d.type1))
 			.on("mouseover", (d) => {
 				const color1 = scaleColor(types.indexOf(d.type1));
 				const color2 = scaleColor(types.indexOf(d.type2));
@@ -136,5 +145,38 @@ d3.csv("pokemons_trio.csv")
 			.attr("d", triangleLine)
 			.style("fill", "none")
 			.style("stroke", "#aaa");
+
+		// draw legend
+
+		const scalePos = d3.scalePoint()
+							.domain(types)
+							.range([0, 250]);
+		const legend = svg.append("g")
+						.attr("class", "legend")
+						.attr("transform", "translate(280,-270)");
+
+		legend
+			.append("text")
+			.attr("transform", "translate(30, 150)rotate(90)")
+			.attr("class", "header")
+			.text("Pokemon types");
+
+		const elements = legend
+			.selectAll(".type")
+				.data(types).enter()
+			.append("g")
+			.attr("transform", (d) => `translate(0,${scalePos(d)})`);
+
+
+		elements
+			.append("text")
+			.text(d => d);
+
+		elements
+			.append("circle")
+			.attr("r", 5)
+			.attr("cx", 15)
+			.attr("cy", -5)
+			.style("fill", (d) => getColor(d));
 
   });		
