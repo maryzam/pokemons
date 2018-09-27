@@ -167,7 +167,6 @@ d3.csv("pokemons_trio.csv")
 			.append("g")
 			.attr("transform", (d) => `translate(0,${scalePos(d)})`);
 
-
 		elements
 			.append("text")
 			.text(d => d);
@@ -178,5 +177,32 @@ d3.csv("pokemons_trio.csv")
 			.attr("cx", 15)
 			.attr("cy", -5)
 			.style("fill", (d) => getColor(d));
+
+
+		var notes = svg.append("g")
+					.attr("class", "notes")
+					.attr("transform","translate(-350, -300)");
+
+		notes
+			.append("text")
+			.attr("class", "header")
+			.text("Visualize All 802 Pokemons");
+
+		notes
+			.selectAll(".items")
+			.data([
+					"Balanced diagram of basic attributes",
+					"over Pokemon types.",
+					"",
+					"Compare speed/attack/defense",
+					"and see types prefered",
+					"attribute.",
+					"",
+					"Hover for more",
+					"information."
+				]).enter()
+			.append("text")
+			.text(d => d)
+			.attr("transform", (d, i) => `translate(0, ${(i + 2)*25})`);
 
   });		

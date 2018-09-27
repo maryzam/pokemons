@@ -22,7 +22,7 @@ body {
     position: absolute;			
     text-align: center;			
     padding: 2px 5px;				
-    font: 12px sans-serif;		
+    font: 10px sans-serif;		
     background: white;	
     border: solid 1px #dadada;		
     pointer-events: none;	
@@ -47,7 +47,7 @@ h2 {
 	text-anchor: end;
 }
 
-.legend .header {
+.legend .header, .notes .header {
 	font-weight: bold;
 	fill: #dadada;
 }
@@ -55,4 +55,15 @@ h2 {
 .viz svg {
 	display: block;
 	margin: auto;
+}
+
+.notes text {
+	fill: #777;
+	text-align: right;
+}
+
+.notes .header {
+	font-weight: bold;
+	fill: #dadada;
+	font-size: 1.25em;
 }
