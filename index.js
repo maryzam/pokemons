@@ -1,7 +1,7 @@
 d3.csv("pokemons_trio.csv")
   .then((source) => {
   		// prepare container
-		const width = 700;
+		const width = 760;
 		const aspectRatio = 2 / Math.sqrt(3);
 		const height = width / aspectRatio;
 
@@ -51,23 +51,32 @@ d3.csv("pokemons_trio.csv")
 						.domain([0, 1]);
 
 		// calculate coordinates
-		const minRatio = 0.25;
+		const minRatio = 0.3;
 		const coeff = 1 / (1 - minRatio);
-		const calcX = (speed, attack, defense)  => {
+		const calcX = (item)  => {
 
-			const x = attack * triangle.attack.x + 
-					  speed * triangle.speed.x +
-					  defense * triangle.defense.x;
+			const x = item.attack_b * triangle.attack.x + 
+					  item.speed_b * triangle.speed.x +
+					  item.defense_b * triangle.defense.x;
 			return coeff * scaleCoord(x);
 		};
 
-		const calcY = (speed, attack, defense) => {
+		const calcY = (item) => {
 
-			const y = attack * triangle.attack.y + 
-					  speed * triangle.speed.y +
-					  defense * triangle.defense.y;
+			const y = item.attack_b * triangle.attack.y + 
+					  item.speed_b * triangle.speed.y +
+					  item.defense_b * triangle.defense.y;
 			return coeff * scaleCoord(y);
 		};
+
+		// use the force
+		const simulation = d3.forceSimulation(source)
+							      .force("x", d3.forceX((d) => calcX(d)).strength(1))
+							      .force("y", d3.forceY((d) => calcY(d)).strength(1))
+							      .force("collide", d3.forceCollide(5))
+							.stop();
+
+		for (var i = 0; i < 200; ++i) simulation.tick();
 
 		// draw names
 		const tooltip = d3.select("#tooltip");
@@ -81,11 +90,23 @@ d3.csv("pokemons_trio.csv")
 			.append("circle")
 				.attr("class", "pokemon")
 				.attr("r", (d) => scaleRadius(+d.power))
-				.attr("cx", (d) => calcX(+d.speed_b, +d.attack_b, +d.defense_b))
-				.attr("cy", (d) => calcY(+d.speed_b, +d.attack_b, +d.defense_b))
+				.attr("cx", (d) => d.x)
+				.attr("cy", (d) => d.y)
 				.style("fill", (d) => scaleColor(types.indexOf(d.type1)))
 			.on("mouseover", (d) => {
-				tooltip.html(`${d.name}<br/>${d.type1}`);
+				const color1 = scaleColor(types.indexOf(d.type1));
+				const color2 = scaleColor(types.indexOf(d.type2));
+
+				tooltip.html(`<h2>${d.name}</h2>
+								(<span style="color:${color1}">
+									${d.type1}</span>
+									${d.type2.length ? 
+										`/ <span style="color:${color2}">${d.type2}</span>` 
+										: ""}
+								)<br/>
+								<b>attack</b> ${d.attack}<br/>
+								<b>defense</b> ${d.defense}<br/>
+								<b>speed</b> ${d.speed}`);
 				tooltip.style("display", "block")
 					.style("left", (d3.event.pageX) + "px")		
                 	.style("top", (d3.event.pageY - 30) + "px");	
@@ -102,7 +123,7 @@ d3.csv("pokemons_trio.csv")
 			.append("text")
 				.text((d) => d.title)
 				.attr("transform", (d) => `translate(${scaleCoord(d.x)},${scaleCoord(d.y)})`)
-				.attr("dy", (d) => d.y > 0.5 ? 10: -5);
+				.attr("dy", (d) => d.y > 0.5 ? 15: -10);
 
 		const triangleLine = d3.line()
 						.x((d) => scaleCoord(d.x))
